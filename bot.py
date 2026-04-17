@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "⚽ Футбольный бот работает 24/7 на Qwen 3.6!"
+    return "⚽ Футбольный бот работает 24/7!"
 
 def run_flask():
     app.run(host='0.0.0.0', port=8080)
@@ -43,7 +43,7 @@ leagues_info = {
     "seriea": "🇮🇹 **Серия А (Италия)**\n\nЧемпионы по сезонам:\n• 2023/24 - Интер\n• 2022/23 - Наполи\n\n🏆 Всего титулов:\n1. Ювентус - 36\n2. Милан - 19"
 }
 
-# === ФУНКЦИЯ ЗАПРОСА К QWEN 3.6 ===
+# === ФУНКЦИЯ ЗАПРОСА К БЕСПЛАТНОЙ МОДЕЛИ (NVIDIA Nemotron 3 Nano) ===
 def ask_football_ai(question):
     try:
         response = requests.post(
@@ -55,11 +55,11 @@ def ask_football_ai(question):
                 "X-Title": "Football Expert Bot"
             },
             data=json.dumps({
-                "model": "qwen/qwen3.6-plus-preview:free",  # ← САМАЯ СВЕЖАЯ БЕСПЛАТНАЯ МОДЕЛЬ
+                "model": "nvidia/nemotron-3-nano-30b-a3b:free",  # ← РАБОЧАЯ БЕСПЛАТНАЯ МОДЕЛЬ
                 "messages": [
                     {
                         "role": "system",
-                        "content": "Ты эксперт по футболу. Сегодня апрель 2026 года. Отвечай кратко, по делу, на русском языке, добавляй эмодзи ⚽. Твои знания включают события до 2026 года."
+                        "content": "Ты эксперт по футболу. Сегодня апрель 2026 года. Отвечай кратко, по делу, на русском языке, добавляй эмодзи ⚽."
                     },
                     {
                         "role": "user",
@@ -94,11 +94,10 @@ def ask_football_ai(question):
 def start(message):
     bot.send_message(
         message.chat.id, 
-        "⚽ **Футбольный эксперт на Qwen 3.6 (2026)!** ⚽\n\n"
-        "Я работаю на **самой свежей бесплатной модели** от Alibaba Cloud.\n\n"
-        "📅 Знаю события до 2026 года\n"
-        "🧠 Встроенное рассуждение для сложных вопросов\n"
-        "⚡ Быстрые ответы\n\n"
+        "⚽ **Футбольный эксперт 24/7!** ⚽\n\n"
+        "Я работаю на **NVIDIA Nemotron 3 Nano** — это бесплатная и мощная модель.\n\n"
+        "📅 Знаю футбол до 2026 года\n"
+        "⚡ Быстрые и точные ответы\n\n"
         "Используй кнопки ниже 👇",
         reply_markup=main_keyboard()
     )
@@ -133,8 +132,8 @@ def help_command(message):
         "⚽ **Задать вопрос** - любой вопрос о футболе\n"
         "🏆 **Топ-лиги** - информация о чемпионатах\n"
         "📰 **Новости футбола** - актуальные новости\n\n"
-        "🧠 **Модель:** Qwen 3.6 Plus Preview (апрель 2026)\n"
-        "💰 **Стоимость:** Бесплатно\n\n"
+        "🧠 **Модель:** NVIDIA Nemotron 3 Nano 30B A3B (бесплатно)\n"
+        "💰 **Стоимость:** 0$ навсегда\n\n"
         "💡 **Примеры вопросов:**\n"
         "• Кто выиграет Лигу Чемпионов?\n"
         "• Сравни Месси и Роналду\n"
@@ -164,5 +163,5 @@ if __name__ == "__main__":
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.start()
     sleep(2)
-    print("🤖 Футбольный бот на Qwen 3.6 запущен на Render.com 24/7!")
+    print("🤖 Футбольный бот на NVIDIA Nemotron 3 Nano запущен на Render.com 24/7!")
     bot.infinity_polling()
