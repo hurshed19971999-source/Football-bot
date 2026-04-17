@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "⚽ Футбольный бот работает 24/7!"
+    return "⚽ Футбольный бот работает 24/7 с веб-поиском!"
 
 def run_flask():
     app.run(host='0.0.0.0', port=8080)
@@ -31,6 +31,7 @@ def main_keyboard():
         KeyboardButton("⚽ Задать вопрос"),
         KeyboardButton("📸 Фото игроков"),
         KeyboardButton("🏆 Топ-лиги"),
+        KeyboardButton("📰 Новости футбола"),
         KeyboardButton("ℹ️ Помощь")
     )
     return keyboard
@@ -47,7 +48,7 @@ def players_keyboard():
     )
     return keyboard
 
-# === РАБОЧИЕ ССЫЛКИ НА ФОТО (проверенные) ===
+# === ФОТО ИГРОКОВ ===
 player_photos = {
     "messi": "https://cdn.pixabay.com/photo/2022/12/20/06/18/lionel-messi-7668029_640.jpg",
     "ronaldo": "https://cdn.pixabay.com/photo/2022/11/22/10/29/cristiano-ronaldo-7609522_640.jpg",
@@ -74,7 +75,7 @@ leagues_info = {
     "seriea": "🇮🇹 **Серия А**\n\n1. Ювентус - 36\n2. Милан - 19\n3. Интер - 19"
 }
 
-# === ФУНКЦИЯ ИИ ===
+# === ФУНКЦИЯ ЗАПРОСА К ИИ С ВЕБ-ПОИСКОМ ===
 def ask_football_ai(question):
     try:
         response = requests.post(
@@ -82,28 +83,61 @@ def ask_football_ai(question):
             headers={
                 "Authorization": f"Bearer {OPENROUTER_KEY}",
                 "Content-Type": "application/json",
+                "HTTP-Referer": "https://t.me/Bothurshed_bot",
+                "X-Title": "Football Expert Bot"
             },
             data=json.dumps({
-                "model": "openrouter/free",
-                "messages": [{"role": "user", "content": f"Ты эксперт по футболу. Отвечай кратко на русском. Вопрос: {question}"}],
-                "max_tokens": 500
+                "model": "openai/gpt-4.1-mini:online",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "Ты эксперт по футболу. Сегодня апрель 2026 года. Отвечай кратко, по делу, на русском языке, добавляй эмодзи ⚽. Если спрашивают про актуальные события (результаты матчей, трансферы, турнирные таблицы), используй поиск в интернете, чтобы дать точный и свежий ответ."
+                    },
+                    {
+                        "role": "user",
+                        "content": question
+                    }
+                ],
+                "max_tokens": 800,
+                "temperature": 0.7,
+                "plugins": [{"id": "web", "max_results": 3}]
             }),
-            timeout=30
+            timeout=45
         )
+        
         if response.status_code == 200:
-            return response.json()["choices"][0]["message"]["content"]
-        return f"❌ Ошибка API: {response.status_code}"
+            result = response.json()
+            return result["choices"][0]["message"]["content"]
+        else:
+            error_msg = f"Ошибка API: {response.status_code}"
+            try:
+                error_detail = response.json()
+                error_msg += f" - {error_detail.get('error', {}).get('message', '')}"
+            except:
+                pass
+            return f"❌ {error_msg}"
+            
+    except requests.exceptions.Timeout:
+        return "⏰ Таймаут. API не отвечает. Попробуй ещё раз."
     except Exception as e:
-        return f"❌ Ошибка: {e}"
+        return f"❌ Ошибка: {str(e)[:150]}"
 
-# === КОМАНДЫ ===
+# === КОМАНДА /start ===
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, "⚽ Футбольный эксперт 24/7!", reply_markup=main_keyboard())
+    bot.send_message(
+        message.chat.id, 
+        "⚽ **Футбольный эксперт 24/7 с доступом в интернет!** ⚽\n\n"
+        "Я знаю всё о футболе, включая **свежие новости 2026 года**!\n\n"
+        "📰 Могу рассказать о последних матчах, трансферах и результатах.\n\n"
+        "Используй кнопки ниже 👇",
+        reply_markup=main_keyboard()
+    )
 
+# === ОБРАБОТКА КНОПОК МЕНЮ ===
 @bot.message_handler(func=lambda message: message.text == "⚽ Задать вопрос")
 def ask_question(message):
-    bot.send_message(message.chat.id, "Задавай вопрос о футболе 👇")
+    bot.send_message(message.chat.id, "Задавай любой вопрос о футболе! Я найду актуальную информацию в интернете 👇")
 
 @bot.message_handler(func=lambda message: message.text == "📸 Фото игроков")
 def show_players(message):
@@ -120,11 +154,25 @@ def show_leagues(message):
     )
     bot.send_message(message.chat.id, "Выбери лигу:", reply_markup=keyboard)
 
+@bot.message_handler(func=lambda message: message.text == "📰 Новости футбола")
+def football_news(message):
+    bot.send_chat_action(message.chat.id, 'typing')
+    answer = ask_football_ai("Расскажи самые свежие новости футбола за последние дни. Какие громкие трансферы, результаты матчей, события?")
+    bot.reply_to(message, answer)
+
 @bot.message_handler(func=lambda message: message.text == "ℹ️ Помощь")
 def help_command(message):
-    bot.send_message(message.chat.id, "📖 Кнопки:\n⚽ Задать вопрос\n📸 Фото игроков\n🏆 Топ-лиги")
+    bot.send_message(
+        message.chat.id,
+        "📖 **Помощь**\n\n"
+        "⚽ **Задать вопрос** - любой вопрос о футболе (я ищу актуальную информацию в интернете)\n"
+        "📸 **Фото игроков** - фото топ-игроков\n"
+        "🏆 **Топ-лиги** - информация о чемпионатах\n"
+        "📰 **Новости футбола** - свежие новости\n\n"
+        "🌐 **Умею искать в интернете**: результаты матчей, трансферы, турнирные таблицы и любые актуальные события 2026 года!"
+    )
 
-# === ОБРАБОТКА КНОПОК ===
+# === ОБРАБОТКА ИНЛАЙН КНОПОК ===
 @bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
     try:
@@ -142,11 +190,13 @@ def callback_handler(call):
         bot.send_message(call.message.chat.id, f"❌ Ошибка: {e}")
         bot.answer_callback_query(call.id)
 
-# === ОБРАБОТКА ВОПРОСОВ ===
+# === ОБРАБОТКА ТЕКСТОВЫХ ВОПРОСОВ ===
 @bot.message_handler(func=lambda message: True)
 def handle_question(message):
-    if message.text in ["⚽ Задать вопрос", "📸 Фото игроков", "🏆 Топ-лиги", "ℹ️ Помощь"]:
+    # Пропускаем команды и кнопки
+    if message.text in ["⚽ Задать вопрос", "📸 Фото игроков", "🏆 Топ-лиги", "📰 Новости футбола", "ℹ️ Помощь"]:
         return
+    
     bot.send_chat_action(message.chat.id, 'typing')
     answer = ask_football_ai(message.text)
     bot.reply_to(message, answer)
@@ -156,5 +206,5 @@ if __name__ == "__main__":
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.start()
     sleep(2)
-    print("🤖 Бот с фото запущен!")
+    print("🤖 Футбольный бот с веб-поиском запущен на Render.com 24/7!")
     bot.infinity_polling()
