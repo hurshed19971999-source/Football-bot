@@ -29,50 +29,21 @@ def main_keyboard():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     keyboard.add(
         KeyboardButton("⚽ Задать вопрос"),
-        KeyboardButton("📸 Фото игроков"),
         KeyboardButton("🏆 Топ-лиги"),
         KeyboardButton("📰 Новости футбола"),
+        KeyboardButton("📊 Турнирные таблицы"),
         KeyboardButton("ℹ️ Помощь")
     )
     return keyboard
 
-def players_keyboard():
-    keyboard = InlineKeyboardMarkup(row_width=2)
-    keyboard.add(
-        InlineKeyboardButton("🐐 Месси", callback_data="messi"),
-        InlineKeyboardButton("🐐 Роналду", callback_data="ronaldo"),
-        InlineKeyboardButton("🇫🇷 Мбаппе", callback_data="mbappe"),
-        InlineKeyboardButton("🇳🇴 Холланд", callback_data="haaland"),
-        InlineKeyboardButton("🇧🇷 Неймар", callback_data="neymar"),
-        InlineKeyboardButton("🇪🇸 Педри", callback_data="pedri")
-    )
-    return keyboard
-
-# === ФОТО ИГРОКОВ ===
-player_photos = {
-    "messi": "https://cdn.pixabay.com/photo/2022/12/20/06/18/lionel-messi-7668029_640.jpg",
-    "ronaldo": "https://cdn.pixabay.com/photo/2022/11/22/10/29/cristiano-ronaldo-7609522_640.jpg",
-    "mbappe": "https://cdn.pixabay.com/photo/2022/12/06/18/55/kylian-mbappe-7640139_640.jpg",
-    "haaland": "https://cdn.pixabay.com/photo/2023/02/20/20/53/erling-haaland-7804054_640.jpg",
-    "neymar": "https://cdn.pixabay.com/photo/2018/06/27/09/37/neymar-3502004_640.jpg",
-    "pedri": "https://cdn.pixabay.com/photo/2021/07/12/12/23/pedri-6460953_640.jpg"
-}
-
-player_captions = {
-    "messi": "🐐 **Лионель Месси**\n\n✅ 8 Золотых мячей\n✅ Чемпион мира 2022",
-    "ronaldo": "🐐 **Криштиану Роналду**\n\n✅ 5 Золотых мячей\n✅ 900+ голов",
-    "mbappe": "⚡ **Килиан Мбаппе**\n\n✅ Чемпион мира 2018\n✅ Лучший бомбардир ЧМ-2022",
-    "haaland": "💪 **Эрлинг Холланд**\n\n✅ Лучший бомбардир АПЛ 2023",
-    "neymar": "✨ **Неймар**\n\n✅ Лучший бомбардир Бразилии",
-    "pedri": "🎯 **Педри**\n\n✅ Лучший молодой игрок"
-}
-
-# === ТОП-ЛИГИ ===
+# === ИНФО О ЛИГАХ ===
 leagues_info = {
-    "apl": "🏴󠁧󠁢󠁥󠁮󠁧󠁿 **АПЛ**\n\n1. Манчестер Юнайтед - 20\n2. Ливерпуль - 19\n3. Арсенал - 13",
-    "laliga": "🇪🇸 **Ла Лига**\n\n1. Реал Мадрид - 35\n2. Барселона - 27\n3. Атлетико - 11",
-    "bundesliga": "🇩🇪 **Бундеслига**\n\n1. Бавария - 32\n2. Боруссия Д - 8",
-    "seriea": "🇮🇹 **Серия А**\n\n1. Ювентус - 36\n2. Милан - 19\n3. Интер - 19"
+    "apl": "🏴󠁧󠁢󠁥󠁮󠁧󠁿 **АПЛ (Английская Премьер-лига)**\n\nЧемпионы по сезонам:\n• 2023/24 - Манчестер Сити\n• 2022/23 - Манчестер Сити\n• 2021/22 - Манчестер Сити\n• 2020/21 - Манчестер Сити\n\n🏆 Всего титулов:\n1. Манчестер Юнайтед - 20\n2. Ливерпуль - 19\n3. Арсенал - 13\n4. Манчестер Сити - 8",
+    "laliga": "🇪🇸 **Ла Лига (Испания)**\n\nЧемпионы по сезонам:\n• 2023/24 - Реал Мадрид\n• 2022/23 - Барселона\n• 2021/22 - Реал Мадрид\n\n🏆 Всего титулов:\n1. Реал Мадрид - 35\n2. Барселона - 27\n3. Атлетико Мадрид - 11",
+    "bundesliga": "🇩🇪 **Бундеслига (Германия)**\n\nЧемпионы по сезонам:\n• 2023/24 - Байер 04\n• 2022/23 - Бавария\n• 2021/22 - Бавария\n\n🏆 Всего титулов:\n1. Бавария - 32\n2. Боруссия Дортмунд - 8\n3. Вердер - 4",
+    "seriea": "🇮🇹 **Серия А (Италия)**\n\nЧемпионы по сезонам:\n• 2023/24 - Интер\n• 2022/23 - Наполи\n• 2021/22 - Милан\n\n🏆 Всего титулов:\n1. Ювентус - 36\n2. Милан - 19\n3. Интер - 19",
+    "ligue1": "🇫🇷 **Лига 1 (Франция)**\n\nЧемпионы по сезонам:\n• 2023/24 - ПСЖ\n• 2022/23 - ПСЖ\n• 2021/22 - ПСЖ\n\n🏆 Всего титулов:\n1. ПСЖ - 12\n2. Сент-Этьен - 10\n3. Марсель - 9",
+    "rfpl": "🇷🇺 **РПЛ (Россия)**\n\nЧемпионы по сезонам:\n• 2023/24 - Зенит\n• 2022/23 - Зенит\n• 2021/22 - Зенит\n\n🏆 Всего титулов:\n1. Зенит - 10\n2. Спартак - 10\n3. ЦСКА - 6"
 }
 
 # === ФУНКЦИЯ ЗАПРОСА К ИИ С ВЕБ-ПОИСКОМ ===
@@ -130,6 +101,11 @@ def start(message):
         "⚽ **Футбольный эксперт 24/7 с доступом в интернет!** ⚽\n\n"
         "Я знаю всё о футболе, включая **свежие новости 2026 года**!\n\n"
         "📰 Могу рассказать о последних матчах, трансферах и результатах.\n\n"
+        "🔍 **Что я умею:**\n"
+        "• Отвечать на любые вопросы о футболе\n"
+        "• Искать актуальные новости в интернете\n"
+        "• Рассказывать о турнирных таблицах\n"
+        "• Обсуждать игроков, команды, тактику\n\n"
         "Используй кнопки ниже 👇",
         reply_markup=main_keyboard()
     )
@@ -139,10 +115,6 @@ def start(message):
 def ask_question(message):
     bot.send_message(message.chat.id, "Задавай любой вопрос о футболе! Я найду актуальную информацию в интернете 👇")
 
-@bot.message_handler(func=lambda message: message.text == "📸 Фото игроков")
-def show_players(message):
-    bot.send_message(message.chat.id, "Выбери игрока:", reply_markup=players_keyboard())
-
 @bot.message_handler(func=lambda message: message.text == "🏆 Топ-лиги")
 def show_leagues(message):
     keyboard = InlineKeyboardMarkup(row_width=2)
@@ -150,14 +122,22 @@ def show_leagues(message):
         InlineKeyboardButton("🏴󠁧󠁢󠁥󠁮󠁧󠁿 АПЛ", callback_data="apl"),
         InlineKeyboardButton("🇪🇸 Ла Лига", callback_data="laliga"),
         InlineKeyboardButton("🇩🇪 Бундеслига", callback_data="bundesliga"),
-        InlineKeyboardButton("🇮🇹 Серия А", callback_data="seriea")
+        InlineKeyboardButton("🇮🇹 Серия А", callback_data="seriea"),
+        InlineKeyboardButton("🇫🇷 Лига 1", callback_data="ligue1"),
+        InlineKeyboardButton("🇷🇺 РПЛ", callback_data="rfpl")
     )
-    bot.send_message(message.chat.id, "Выбери лигу:", reply_markup=keyboard)
+    bot.send_message(message.chat.id, "📊 Выбери лигу, чтобы узнать о чемпионах:", reply_markup=keyboard)
 
 @bot.message_handler(func=lambda message: message.text == "📰 Новости футбола")
 def football_news(message):
     bot.send_chat_action(message.chat.id, 'typing')
-    answer = ask_football_ai("Расскажи самые свежие новости футбола за последние дни. Какие громкие трансферы, результаты матчей, события?")
+    answer = ask_football_ai("Расскажи самые свежие новости футбола за последние дни. Какие громкие трансферы, результаты матчей, события? Используй поиск в интернете.")
+    bot.reply_to(message, answer)
+
+@bot.message_handler(func=lambda message: message.text == "📊 Турнирные таблицы")
+def standings(message):
+    bot.send_chat_action(message.chat.id, 'typing')
+    answer = ask_football_ai("Покажи текущие турнирные таблицы топ-5 лиг (АПЛ, Ла Лига, Бундеслига, Серия А, Лига 1). Кто лидирует? Используй поиск в интернете для актуальных данных.")
     bot.reply_to(message, answer)
 
 @bot.message_handler(func=lambda message: message.text == "ℹ️ Помощь")
@@ -166,35 +146,29 @@ def help_command(message):
         message.chat.id,
         "📖 **Помощь**\n\n"
         "⚽ **Задать вопрос** - любой вопрос о футболе (я ищу актуальную информацию в интернете)\n"
-        "📸 **Фото игроков** - фото топ-игроков\n"
-        "🏆 **Топ-лиги** - информация о чемпионатах\n"
-        "📰 **Новости футбола** - свежие новости\n\n"
-        "🌐 **Умею искать в интернете**: результаты матчей, трансферы, турнирные таблицы и любые актуальные события 2026 года!"
+        "🏆 **Топ-лиги** - информация о чемпионатах и их победителях\n"
+        "📰 **Новости футбола** - свежие новости из мира футбола\n"
+        "📊 **Турнирные таблицы** - текущие таблицы топ-лиг\n\n"
+        "🌐 **Умею искать в интернете**: результаты матчей, трансферы, турнирные таблицы и любые актуальные события 2026 года!\n\n"
+        "💡 **Примеры вопросов:**\n"
+        "• Кто выиграет Лигу Чемпионов?\n"
+        "• Какие трансферы прошлым летом?\n"
+        "• Кто лучший бомбардир в истории?\n"
+        "• Сравни Месси и Роналду"
     )
 
 # === ОБРАБОТКА ИНЛАЙН КНОПОК ===
 @bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
-    try:
-        if call.data in player_photos:
-            bot.send_photo(
-                call.message.chat.id,
-                player_photos[call.data],
-                caption=player_captions[call.data],
-                parse_mode="Markdown"
-            )
-        elif call.data in leagues_info:
-            bot.send_message(call.message.chat.id, leagues_info[call.data], parse_mode="Markdown")
-        bot.answer_callback_query(call.id)
-    except Exception as e:
-        bot.send_message(call.message.chat.id, f"❌ Ошибка: {e}")
+    if call.data in leagues_info:
+        bot.send_message(call.message.chat.id, leagues_info[call.data], parse_mode="Markdown")
         bot.answer_callback_query(call.id)
 
 # === ОБРАБОТКА ТЕКСТОВЫХ ВОПРОСОВ ===
 @bot.message_handler(func=lambda message: True)
 def handle_question(message):
     # Пропускаем команды и кнопки
-    if message.text in ["⚽ Задать вопрос", "📸 Фото игроков", "🏆 Топ-лиги", "📰 Новости футбола", "ℹ️ Помощь"]:
+    if message.text in ["⚽ Задать вопрос", "🏆 Топ-лиги", "📰 Новости футбола", "📊 Турнирные таблицы", "ℹ️ Помощь"]:
         return
     
     bot.send_chat_action(message.chat.id, 'typing')
